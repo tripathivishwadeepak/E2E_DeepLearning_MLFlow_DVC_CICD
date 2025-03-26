@@ -6,3 +6,5 @@ EPOCHS: 1
 CLASSES: 2
 WEIGHTS: imagenet
 LEARNING_RATE: 0.01
+TRAINING:
+  SHOULD_TRAIN: False  # Set to True when you want to train
