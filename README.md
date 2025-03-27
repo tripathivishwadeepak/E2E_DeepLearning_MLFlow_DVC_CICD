@@ -56,3 +56,32 @@ if not os.listdir(data_ingestion_config.unzip_dir):
 TRAINING:
   SHOULD_TRAIN: False  # Set to True when you want to train
 ```
+
+
+### Step 05 (MLFLOW) -
+[Documentation](https://mlflow.org/docs/latest/index.html)
+
+##### cmd
+- mlflow ui
+
+### dagshub
+[dagshub](https://dagshub.com/)
+
+```
+MLFLOW_TRACKING_URI =
+"https://dagshub.com/tripathivishwadeepak/E2E_DeepLearning_MLFlow_DVC_CICD.mlflow"
+```
+```
+MLFLOW_TRACKING_USERNAME = "tripathivishwadeepak"
+```
+```
+MLFLOW_TRACKING_PASSWORD = "c5e1c9532cc301ea889416e189cae21fc1cceb7b"
+```
+python script.py
+
+Run this to set as env variables:
+```bash
+set MLFLOW_TRACKING_URI=https://dagshub.com/tripathivishwadeepak/E2E_DeepLearning_MLFlow_DVC_CICD.mlflow
+set MLFLOW_TRACKING_USERNAME=tripathivishwadeepak
+set MLFLOW_TRACKING_PASSWORD=c5e1c9532cc301ea889416e189cae21fc1cceb7b
+```

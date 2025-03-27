@@ -16,3 +16,5 @@ prepare_base_model:
 model_training:
   root_dir: artifacts/model_training
   training_model_path: artifacts/model_training/model.h5 
+
+
