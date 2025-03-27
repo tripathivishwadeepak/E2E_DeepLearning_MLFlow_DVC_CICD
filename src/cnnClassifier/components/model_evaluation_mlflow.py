@@ -1,25 +1,28 @@
+import tensorflow as tf
 from pathlib import Path
-import tensorflow as tf 
 import mlflow
 import mlflow.keras
 from urllib.parse import urlparse
 from cnnClassifier.entity.config_entity import EvaluationConfig
-from cnnClassifier.utils.common import save_json
+from cnnClassifier.utils.common import read_yaml, create_directories,save_json
+
 
 class Evaluation:
-    def __init__(self,config: EvaluationConfig):
+    def __init__(self, config: EvaluationConfig):
         self.config = config
 
+    
     def _valid_generator(self):
+
         datagenerator_kwargs = dict(
             rescale = 1./255,
-            validation_split = 0.30
+            validation_split=0.30
         )
 
         dataflow_kwargs = dict(
-            target_size = self.config.params_image_size[:-1],
-            batch_size = self.config.params_batch_size,
-            interpolation = "bilinear"
+            target_size=self.config.params_image_size[:-1],
+            batch_size=self.config.params_batch_size,
+            interpolation="bilinear"
         )
 
         valid_datagenerator = tf.keras.preprocessing.image.ImageDataGenerator(
@@ -27,17 +30,17 @@ class Evaluation:
         )
 
         self.valid_generator = valid_datagenerator.flow_from_directory(
-            directory = self.config.training_data,
-            subset = "validation",
-            shuffle = False,
+            directory=self.config.training_data,
+            subset="validation",
+            shuffle=False,
             **dataflow_kwargs
         )
 
+
     @staticmethod
-    #(use staticmethod is if you have something that could be written as a standalone function (not part of any class),
-    # but you want to keep it within the class because it's somehow semantically related to the class.)
-    def load_model(path:Path) -> tf.keras.Model:
+    def load_model(path: Path) -> tf.keras.Model:
         return tf.keras.models.load_model(path)
+    
 
     def evaluation(self):
         self.model = self.load_model(self.config.path_of_model)
@@ -46,20 +49,26 @@ class Evaluation:
         self.save_score()
 
     def save_score(self):
-        scores = {"loss": self.score[0], "accuracy":self.score[1]}
-        save_json(path = Path("scores.json"), data=scores)
+        scores = {"loss": self.score[0], "accuracy": self.score[1]}
+        save_json(path=Path("scores.json"), data=scores)
 
+    
     def log_into_mlflow(self):
         mlflow.set_registry_uri(self.config.mlflow_uri)
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
-
+        
         with mlflow.start_run():
             mlflow.log_params(self.config.all_params)
             mlflow.log_metrics(
-                {"loss":self.score[0],"accuracy":self.score[1]}
+                {"loss": self.score[0], "accuracy": self.score[1]}
             )
-            # Model registry doesnot work with file store
+            # Model registry does not work with file store
             if tracking_url_type_store != "file":
-                mlflow.keras.log_model(self.model,"model",registered_model_name="VGG16Model")
+
+                # Register the model
+                # There are other ways to use the Model Registry, which depends on the use case,
+                # please refer to the doc for more information:
+                # https://mlflow.org/docs/latest/model-registry.html#api-workflow
+                mlflow.keras.log_model(self.model, "model", registered_model_name="VGG16Model")
             else:
-                mlflow.keras.log_model(self.model,"model")
+                mlflow.keras.log_model(self.model, "model")

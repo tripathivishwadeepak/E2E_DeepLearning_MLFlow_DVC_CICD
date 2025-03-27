@@ -1,11 +1,12 @@
-import os
-from pathlib import Path
 from cnnClassifier.config.configuration import ConfigurationManager
-from cnnClassifier.components.model_training import Model_Training
+from cnnClassifier.components.model_training import Training
 from cnnClassifier import logger
 
 
-STAGE_NAME = "Model Training"
+
+STAGE_NAME = "Training"
+
+
 
 class ModelTrainingPipeline:
     def __init__(self):
@@ -14,17 +15,21 @@ class ModelTrainingPipeline:
     def main(self):
         config = ConfigurationManager()
         training_config = config.get_training_config()
-        training = Model_Training(config = training_config)
+        training = Training(config=training_config)
         training.get_base_model()
         training.train_valid_generator()
         training.train()
 
-if __name__ == "__main__":
+
+
+if __name__ == '__main__':
     try:
-        logger.info(f">>>>> stage {STAGE_NAME} started <<<<<")
+        logger.info(f"*******************")
+        logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
         obj = ModelTrainingPipeline()
         obj.main()
-        logger.info(f">>>>> stage {STAGE_NAME} completed <<<<< \n\n x===============x")
+        logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
     except Exception as e:
         logger.exception(e)
         raise e
+        
