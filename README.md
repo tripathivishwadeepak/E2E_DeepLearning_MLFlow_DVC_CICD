@@ -64,3 +64,10 @@ set MLFLOW_TRACKING_URI=https://dagshub.com/tripathivishwadeepak/E2E_DeepLearnin
 set MLFLOW_TRACKING_USERNAME=tripathivishwadeepak
 set MLFLOW_TRACKING_PASSWORD=c5e1c9532cc301ea889416e189cae21fc1cceb7b
 ```
+
+### DVC Commands
+```bash
+1. dvc init
+2. dvc repro
+3. dvc dag
+```
